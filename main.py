@@ -2,21 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from youtube_transcript_api import YouTubeTranscriptApi
 
-app = FastAPI(
-    title="YouTube Transcript Service",
-    description="A service to fetch YouTube video transcripts",
-)
+app = FastAPI()
 
 ytt_api = YouTubeTranscriptApi()
-
-def getVideoTranscript(video_id: str):
-    transcript = ytt_api.fetch(video_id, languages=['en'])
-    return " ".join([snippet.text for snippet in transcript.snippets])
 
 class TextResponse(BaseModel):
     text: str
 
-@app.get("/transcript/get/{video_id}", response_model=TextResponse)
+@app.get("/get/{video_id}/transcript/", response_model=TextResponse)
 def transcriptGet(video_id: str):
-    response_text = getVideoTranscript(video_id)
-    return TextResponse(text=response_text)
+    response_text = ytt_api.fetch(video_id, languages=['en'])
+    return TextResponse(text=" ".join([snippet.text for snippet in response_text]))
