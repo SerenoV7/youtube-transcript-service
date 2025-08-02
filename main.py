@@ -11,5 +11,4 @@ class TextResponse(BaseModel):
 
 @app.get("/get/{video_id}/transcript/", response_model=TextResponse)
 def transcriptGet(video_id: str):
-    response_text = ytt_api.fetch(video_id, languages=['en'])
-    return TextResponse(text=" ".join([snippet.text for snippet in response_text]))
+    return TextResponse(text=" ".join([snippet.text for snippet in ytt_api.fetch(video_id, languages=['en'])]))
